@@ -12,5 +12,10 @@ func main() {
 	// fmt.Println(todos)
 	todos.toggle(0)
 	todos.printFunc()
-	storage := Todo_json{}
+	storage := NewStorage("todos.json")
+	err := storage.Load(&todos)
+	if err != nil {
+		fmt.Println(err)
+	}
+	storage.Save(todos)
 }
