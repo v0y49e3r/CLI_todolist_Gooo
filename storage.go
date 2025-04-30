@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"time"
 )
@@ -24,18 +25,30 @@ func NewStorage(fileName string) *Storage {
 	return &Storage{FileName: fileName}
 }
 
-func (s *Storage) Save(todos Todos) error {
+func (s *Storage) Save(todos Todos) bool {
 	fileData, err := json.MarshalIndent(todos, "", "  ")
 	if err != nil {
-		return err
+		fmt.Println(err)
+		return false
 	}
-	return os.WriteFile(s.FileName, fileData, 0644)
+	e := os.WriteFile(s.FileName, fileData, 0644)
+	if e != nil {
+		fmt.Println(e)
+		return false
+	}
+	return true
 }
 
-func (s *Storage) Load(todos *Todos) error {
+func (s *Storage) Load(todos *Todos) bool {
 	fileData, err := os.ReadFile(s.FileName)
 	if err != nil {
-		return err
+		fmt.Println(err)
+		return false
 	}
-	return json.Unmarshal(fileData, todos)
+	e := json.Unmarshal(fileData, todos)
+	if e != nil {
+		fmt.Println(e)
+		return false
+	}
+	return true
 }
